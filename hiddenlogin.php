@@ -3,9 +3,6 @@
 * @package      Hidden Login
 * @copyright    Copyright (C) 2010 FalsinSoft. All rights reserved.
 * @license      GNU/GPL
-* @website      https://sites.google.com/site/falsinsoftjoomlaextensions/
-* @email        falsinsoft@gmail.com
-* 
 */
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
@@ -17,16 +14,18 @@ class plgSystemHiddenLogin extends JPlugin
 	public function plgSystemHiddenLogin(&$subject, $config)  
 	{
         parent::__construct($subject, $config);
+		$this->loadLanguage();
     }
 	
 	public function onAfterDispatch()
 	{
 		$app =& JFactory::getApplication();
 		$document =& JFactory::getDocument();
+		$login_url_param = trim($this->params->get('login_url_param', ''));
 		
-		if($app->isAdmin() || $app->getCfg('offline') || $document->getType() != 'html') return true;   
+		if($app->isAdmin() || $app->getCfg('offline') || $document->getType() != 'html' || strlen($login_url_param) == 0) return true;   
 
-		if(JRequest::getVar('hidden') !== null)
+		if(JRequest::getVar($login_url_param) !== null)
 		{
 			$document->addScript(JURI::root(true).'/plugins/system/hiddenlogin/tinybox2/packed.js');
 			$document->addStyleSheet(JURI::root(true).'/plugins/system/hiddenlogin/tinybox2/style.css');
@@ -37,62 +36,94 @@ class plgSystemHiddenLogin extends JPlugin
 	}
 	
 	private function getLoginHtmlCode()
-	{
-		$language =& JFactory::getLanguage();
-		$module = JModuleHelper::getModule('mod_login');
-		$params = new JRegistry();
+	{	
+		$user = JFactory::getUser();
 		
-		$language->load('mod_login');
-		$params->loadString($module->params);
-		$return = JPATH_SITE;
+		$html = '<div style="padding:10px;">';
 		
-		$html = '<form action="'.JRoute::_('index.php', true, $params->get('usesecure')).'" method="post" id="login-form" >';		
-		
-		if($params->get('pretext')) 
+		if($user->get('guest'))
 		{
-			$html .= '<div class="pretext"><p>'.$params->get('pretext').'</p></div>';
-		}
-
-		$html .= '<fieldset class="userdata">';
-		
-		$html .= '<p id="form-login-username">';
-		$html .= '<label for="modlgn-username">'.JText::_('MOD_LOGIN_VALUE_USERNAME').'</label>';
-		$html .= '<input id="modlgn-username" type="text" name="username" class="inputbox"  size="18" />';
-		$html .= '</p>';
-	
-		$html .= '<p id="form-login-password">';
-		$html .= '<label for="modlgn-passwd">'.JText::_('JGLOBAL_PASSWORD').'</label>';
-		$html .= '<input id="modlgn-passwd" type="password" name="password" class="inputbox" size="18"  />';
-		$html .= '</p>';
-	
-		if(JPluginHelper::isEnabled('system', 'remember'))
-		{
-			$html .= '<p id="form-login-remember">';
-			$html .= '<label for="modlgn-remember">'.JText::_('MOD_LOGIN_REMEMBER_ME').'</label>';
-			$html .= '<input id="modlgn-remember" type="checkbox" name="remember" class="inputbox" value="yes"/>';
-			$html .= '</p>';
-		}
+			$html .= '<form action="'.JRoute::_('index.php', true).'" method="post" >';
 			
-		$html .= '<input type="submit" name="Submit" class="button" value="'.JText::_('JLOGIN').'" />';
-		$html .= '<input type="hidden" name="option" value="com_users" />';
-		$html .= '<input type="hidden" name="task" value="user.login" />';
-		$html .= '<input type="hidden" name="return" value="'.$return.'" />';
-		$html .= JHtml::_('form.token');
+			$html .= '<p style="padding-bottom:15px;font-size:24px;">'.JText::_('MOD_HIDDEN_LOGIN_TITLE').'</p>';
+			
+			$html .= '<fieldset  style="padding-bottom:15px;">';
+			
+			$html .= '<p style="padding-bottom:10px;">';
+			$html .= '<label style="padding-right:10px;">'.JText::_('MOD_HIDDEN_LOGIN_USERNAME').'</label>';
+			$html .= '<input type="text" name="username" class="inputbox"  size="18" />';
+			$html .= '</p>';
 		
-		$html .= '</fieldset>';
+			$html .= '<p style="padding-bottom:15px;">';
+			$html .= '<label style="padding-right:18px;">'.JText::_('JGLOBAL_PASSWORD').'</label>';
+			$html .= '<input type="password" name="password" class="inputbox" size="18"  />';
+			$html .= '</p>';
 		
-		$html .= '<ul>';
-		$html .= '<li><a href="'.JRoute::_('index.php?option=com_users&view=reset').'">'.JText::_('MOD_LOGIN_FORGOT_YOUR_PASSWORD').'</a></li>';
-		$html .= '<li><a href="'.JRoute::_('index.php?option=com_users&view=remind').'">'.JText::_('MOD_LOGIN_FORGOT_YOUR_USERNAME').'</a></li>';
-		$html .= '</ul>';
-		
-		if($params->get('posttext'))
+			if(JPluginHelper::isEnabled('system', 'remember'))
+			{
+				$html .= '<p style="padding-bottom:15px;">';
+				$html .= '<label>'.JText::_('MOD_HIDDEN_LOGIN_REMEMBER_ME').'</label>';
+				$html .= '<input type="checkbox" name="remember" class="inputbox" value="yes"/>';
+				$html .= '</p>';
+			}
+				
+			$html .= '<input type="submit" name="Submit" class="button" value="'.JText::_('JLOGIN').'" />';
+			$html .= '<input type="hidden" name="option" value="com_users" />';
+			$html .= '<input type="hidden" name="task" value="user.login" />';
+			$html .= '<input type="hidden" name="return" value="'.$this->getReturnURL().'" />';
+			$html .= JHtml::_('form.token');
+			
+			$html .= '</fieldset>';
+			
+			$html .= '<ul>';
+			$html .= '<li style="padding-bottom:5px;"><a href="'.JRoute::_('index.php?option=com_users&view=reset').'">'.JText::_('MOD_HIDDEN_LOGIN_FORGOT_YOUR_PASSWORD').'</a></li>';
+			$html .= '<li><a href="'.JRoute::_('index.php?option=com_users&view=remind').'">'.JText::_('MOD_HIDDEN_LOGIN_FORGOT_YOUR_USERNAME').'</a></li>';
+			$html .= '</ul>';
+					
+			$html .= '</form>';
+		}
+		else
 		{
-			$html .= '<div class="posttext"><p>'.$params->get('posttext').'</p></div>';
+			$html .= '<p>'.JText::_('MOD_HIDDEN_LOGIN_LOGGED').': <b>'.$user->get('name').'</b></p>';
 		}
 		
-		$html .= '</form>';
+		$html .= '</div>';
 		
 		return $html;
+	}
+	
+	private function getReturnURL()
+	{
+		$uri 	= clone JFactory::getURI();
+		$app	= JFactory::getApplication();
+		$router = $app->getRouter();
+		$vars = $router->parse($uri);
+		unset($vars['lang']);
+		if ($router->getMode() == JROUTER_MODE_SEF)
+		{
+			if (isset($vars['Itemid']))
+			{
+				$itemid = $vars['Itemid'];
+				$menu = $app->getMenu();
+				$item = $menu->getItem($itemid);
+				unset($vars['Itemid']);
+				if (isset($item) && $vars == $item->query) {
+					$url = 'index.php?Itemid='.$itemid;
+				}
+				else {
+					$url = 'index.php?'.JURI::buildQuery($vars).'&Itemid='.$itemid;
+				}
+			}
+			else
+			{
+				$url = 'index.php?'.JURI::buildQuery($vars);
+			}
+		}
+		else
+		{
+			$url = 'index.php?'.JURI::buildQuery($vars);
+		}
+		
+		return base64_encode($url);
 	}
 }

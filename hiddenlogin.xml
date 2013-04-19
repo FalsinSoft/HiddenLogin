@@ -14,6 +14,13 @@
 		<filename>index.html</filename>
 		<folder>tinybox2</folder>
 	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="GENERAL">
+				<field name="login_url_param" type="text" default="login" label="MOD_HIDDEN_LOGIN_URL_PARAM" description="MOD_HIDDEN_LOGIN_URL_PARAM_DESCRIPTION" />
+			</fieldset>
+		</fields>
+    </config>
 	<languages>
 		<language tag="en-GB">language/en-GB/en-GB.plg_system_hiddenlogin.ini</language>
 		<language tag="en-GB">language/en-GB/en-GB.plg_system_hiddenlogin.sys.ini</language>
