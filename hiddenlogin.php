@@ -45,9 +45,9 @@ class plgSystemHiddenLogin extends JPlugin
 		{
 			$html .= '<form action="'.JRoute::_('index.php', true).'" method="post" >';
 			
-			$html .= '<p style="padding-bottom:15px;font-size:24px;">'.JText::_('MOD_HIDDEN_LOGIN_TITLE').'</p>';
+			$html .= '<p style="padding-bottom:15px;font-size:24px;margin:0;line-height:0;">'.JText::_('MOD_HIDDEN_LOGIN_TITLE').'</p>';
 			
-			$html .= '<fieldset  style="padding-bottom:15px;">';
+			$html .= '<fieldset  style="padding-bottom:15px;margin:0;">';
 			
 			$html .= '<p style="padding-bottom:10px;">';
 			$html .= '<label style="padding-right:10px;">'.JText::_('MOD_HIDDEN_LOGIN_USERNAME').'</label>';
@@ -62,7 +62,7 @@ class plgSystemHiddenLogin extends JPlugin
 			if(JPluginHelper::isEnabled('system', 'remember'))
 			{
 				$html .= '<p style="padding-bottom:15px;">';
-				$html .= '<label>'.JText::_('MOD_HIDDEN_LOGIN_REMEMBER_ME').'</label>';
+				$html .= '<label style="padding-right:10px;">'.JText::_('MOD_HIDDEN_LOGIN_REMEMBER_ME').'</label>';
 				$html .= '<input type="checkbox" name="remember" class="inputbox" value="yes"/>';
 				$html .= '</p>';
 			}
