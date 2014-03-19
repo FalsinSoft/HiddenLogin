@@ -19,8 +19,8 @@ class plgSystemHiddenLogin extends JPlugin
 	
 	public function onAfterDispatch()
 	{
-		$app =& JFactory::getApplication();
-		$document =& JFactory::getDocument();
+		$app = JFactory::getApplication();
+		$document = JFactory::getDocument();
 		$login_url_param = trim($this->params->get('login_url_param', ''));
 		
 		if($app->isAdmin() || $app->getCfg('offline') || $document->getType() != 'html' || strlen($login_url_param) == 0) return true;   
@@ -49,12 +49,12 @@ class plgSystemHiddenLogin extends JPlugin
 			
 			$html .= '<fieldset  style="padding-bottom:15px;margin:0;">';
 			
-			$html .= '<p style="padding-bottom:10px;">';
+			$html .= '<p style="padding-top:10px;">';
 			$html .= '<label style="padding-right:10px;">'.JText::_('MOD_HIDDEN_LOGIN_USERNAME').'</label>';
 			$html .= '<input type="text" name="username" class="inputbox"  size="18" />';
 			$html .= '</p>';
 		
-			$html .= '<p style="padding-bottom:15px;">';
+			$html .= '<p>';
 			$html .= '<label style="padding-right:18px;">'.JText::_('JGLOBAL_PASSWORD').'</label>';
 			$html .= '<input type="password" name="password" class="inputbox" size="18"  />';
 			$html .= '</p>';

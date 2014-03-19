@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="2.5" type="plugin" group="system" method="upgrade">
+<extension version="3.2" type="plugin" group="system" method="upgrade">
 	<name>System - Hidden Login</name>
 	<author>FalsinSoft</author>
 	<creationDate>April 2013</creationDate>
 	<copyright>Copyright (C) 2010 FalsinSoft. All rights reserved.</copyright>
 	<license>GNU General Public License</license>
 	<authorEmail>falsinsoft@gmail.com</authorEmail>
-	<authorUrl>https://sites.google.com/site/falsinsoftjoomlaextensions/</authorUrl>
-	<version>1.0</version>
+	<authorUrl>http://falsinsoft-joomla.blogspot.com</authorUrl>
+	<version>1.1</version>
 	<description>DESC_HIDDEN_LOGIN</description>
 	<files>
 		<filename plugin="hiddenlogin">hiddenlogin.php</filename>
@@ -16,7 +16,7 @@
 	</files>
 	<config>
 		<fields name="params">
-			<fieldset name="GENERAL">
+			<fieldset name="basic">
 				<field name="login_url_param" type="text" default="login" label="MOD_HIDDEN_LOGIN_URL_PARAM" description="MOD_HIDDEN_LOGIN_URL_PARAM_DESCRIPTION" />
 			</fieldset>
 		</fields>
